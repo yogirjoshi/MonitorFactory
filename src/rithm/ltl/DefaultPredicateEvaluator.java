@@ -22,6 +22,8 @@ public class DefaultPredicateEvaluator extends PredicateEvaluator{
 	@Override
 	public PredicateState EvaluatePredicates() {
 		// TODO Auto-generated method stub
+		this.prState = new DefaultPredicateState();
+		DefaultProgramState dpState;
 		return this.prState;
 	}
 

@@ -24,16 +24,18 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 	protected ArrayList<PredicateState> Buffer;
 	protected PredicateEvaluator pe;
 	protected HashMap<String, MonState> InitialStates;
-	protected HashMap<String, ArrayList<MonState>> MonStates;
+	protected HashMap<String, MonState> CurrentStates;
+	protected ArrayList<MonitoringEventListener<String, String>> mlist;
 	public void LTLMonitor()
 	{
 		Buffer = new ArrayList<PredicateState>();
 		CurrSpecStatus = new HashMap<String, String>();
 		InitialStates = new HashMap<String, MonState>();
-		MonStates = new HashMap<String, ArrayList<MonState>>();
+		CurrentStates = new HashMap<String, MonState>();
 	}
 	public boolean FillBuffer(ProgState ps) {
 		// TODO Auto-generated method stub
+		pe.SetProgStateObj(ps);
 		Buffer.add(pe.EvaluatePredicates());
 		return false;
 	}
@@ -42,11 +44,12 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 		MonValuation<String> val2 = (MonValuation<String>)val;
 		this.valuation = val2;
 	}
-	protected ArrayList<MonitoringEventListener<String, String>> mlist;
+
 	
-	public void SetMonitoringEventListener(MonitoringEventListener<String, String> mel) {
+	public void SetMonitoringEventListener(MonitoringEventListener<?, ?> mel) {
 		// TODO Auto-generated method stub
-		mlist.add(mel);
+		MonitoringEventListener<String, String> mel1 = ((MonitoringEventListener<String, String>)mel);
+		mlist.add(mel1);
 	}
 	
 	public boolean SetFormulas(ArrayList<String> Specs) {
@@ -116,7 +119,11 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 						DefaultMonState state = states.get(id);
 						state.Valuation = this.valuation.GetSemanticDescription(m3.group(2));
 						if(state.State.equals("(0, 0)"))
+						{
 							this.InitialStates.put(Integer.toString(spec_count), state);
+							this.CurrentStates.put(Integer.toString(spec_count), state);
+							CurrSpecStatus.put(spec, this.valuation.GetDefaultValuation());
+						}
 					}
 				}
 				br.close();
@@ -136,7 +143,20 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 	
 	public HashMap<String, String> runMonitor() {
 		// TODO Auto-generated method stub
-		return null;
+		for(int i =0; i < Buffer.size();i++)
+		{
+			for(int j = 0; j < CurrentStates.size();i++)
+			{
+				CurrentStates.put(Integer.toString(j), CurrentStates.get(j).GetNextMonState(Buffer.get(i)));
+				DefaultMonState ms1 = (DefaultMonState)CurrentStates.get(j);
+				CurrSpecStatus.put(CurrSpecStatus.get(j), ms1.Valuation);
+				for(MonitoringEventListener<String, String> ml: mlist)
+				{
+					ml.MonValuationChanged(CurrSpecStatus.get(j), ms1.Valuation);
+				}
+			}
+		}
+		return CurrSpecStatus;
 	}
 
 	public boolean SetTraceFile(String FileName) {

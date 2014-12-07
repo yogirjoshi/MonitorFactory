@@ -8,7 +8,6 @@ public abstract class PredicateEvaluator{
 	protected PredicateState prState; 
 	public void PredicateEvaluator()
 	{
-		
 	}
 	public void SetProgStateObj(ProgState pState)
 	{

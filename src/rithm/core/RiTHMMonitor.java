@@ -11,6 +11,6 @@ public interface RiTHMMonitor<Formula, T1 extends Collection<Formula>, T2 extend
 	public T2 runMonitor();
 	public boolean SetTraceFile(String FileName);
 	public boolean FillBuffer(ProgState ps);
-	public void SetMonitoringEventListener(MonitoringEventListener<String,String> mel);
+	public void SetMonitoringEventListener(MonitoringEventListener<?,?> mel);
 	public void SetMonitorValuation(MonValuation<?> val);
 }
