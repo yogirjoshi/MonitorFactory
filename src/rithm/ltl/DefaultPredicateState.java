@@ -19,7 +19,7 @@ public class DefaultPredicateState implements PredicateState{
 			return true;
 		}
 		return false;
-	}
+	} 
 
 	public boolean GetValue(String Name) throws RuntimeException{
 		// TODO Auto-generated method stub
