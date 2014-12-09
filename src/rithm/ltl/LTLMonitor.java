@@ -1,6 +1,7 @@
 package rithm.ltl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -19,6 +20,11 @@ import rithm.core.RiTHMMonitor;
 public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashMap<String,String>>
 {
 
+
+	public boolean SynthesizeMonitors(ArrayList<String> Specs) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	protected HashMap<String, String> CurrSpecStatus; 
 	protected MonValuation<String> valuation;
 	protected ArrayList<PredicateState> Buffer;
@@ -26,17 +32,20 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 	protected HashMap<String, MonState> InitialStates;
 	protected HashMap<String, MonState> CurrentStates;
 	protected ArrayList<MonitoringEventListener<String, String>> mlist;
-	public void LTLMonitor()
+	public LTLMonitor()
 	{
 		Buffer = new ArrayList<PredicateState>();
 		CurrSpecStatus = new HashMap<String, String>();
 		InitialStates = new HashMap<String, MonState>();
 		CurrentStates = new HashMap<String, MonState>();
+		mlist = new ArrayList<MonitoringEventListener<String,String>>();
 	}
 	public boolean FillBuffer(ProgState ps) {
 		// TODO Auto-generated method stub
 		pe.SetProgStateObj(ps);
-		Buffer.add(pe.EvaluatePredicates());
+		assert Buffer != null;
+		assert pe != null;
+		Buffer.add((PredicateState)pe.EvaluatePredicates());
 		return false;
 	}
 	public void SetMonitorValuation(MonValuation<?> val) {
@@ -60,10 +69,39 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 		}
 		return false;
 	}
-	public boolean SynthesizeMonitors(ArrayList<String> Filenames) {
+	public boolean SynthesizeMonitors(String filename) {
 		// TODO Auto-generated method stub
+		ArrayList<String> Filenames = new ArrayList<String>();
+		int specCount = 0;
+		System.out.println(filename);
+		BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filename));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+            	System.out.println(line);
+            	ProcessBuilder p = new ProcessBuilder();
+            	p.directory(new File("/home/y2joshi/rithm/src/GooMF/GooMFGenerator/ltl3tools-0.0.7/"));
+            	p.command("/bin/bash", "./ltl2monLTL3", "\""+ line +"\"");
+            	p.redirectOutput(new File("/home/y2joshi/" + Integer.toString(specCount) + ".txt"));
+            	Filenames.add("/home/y2joshi/" + Integer.toString(specCount) + ".txt");
+            	Process ps = p.start();
+            	ps.waitFor();
+            	specCount++;
+            }
+        } catch (Exception e) {
+        	System.err.println(e.getMessage());
+        	return false;
+        } finally {
+            try {
+                reader.close();
+            } catch (Exception e) {
+            	System.err.println(e.getMessage());
+            	return false;
+            }
+        }
 		ArrayList<DefaultMonState> states = new ArrayList<DefaultMonState>();
-		String Pattern1 = "(\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\")[ ]+->[ ]+(\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\")[ ]+\\[label[ ]+=[ ]+\"\\(([a-z]+)(&&([a-z])+)*\\)\"\\]";
+		String Pattern1 = "(\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\")[ ]+->[ ]+(\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\")[ ]+\\[label[ ]+=[ ]+\"\\(([a-z]+(&&[a-z]+)*)\\)\"\\]";
 		String Pattern2 = "(\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\")[ ]+->[ ]+(\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\")[ ]+\\[label[ ]+=[ ]+\"(\\(<empty>\\))\"\\]";
 		String Pattern3 = "(\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\")[ ]+\\[label=\"\\([-]*[0-9]+,[ ]+[-]*[0-9]+\\)\",[ ]+style=[a-z]+,[ ]+color=([a-z]+)\\]";
 		int spec_count = 0;
@@ -76,12 +114,14 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 			Pattern regex3 = Pattern.compile(Pattern3);
 			for(String Filename: Filenames)
 			{
+				
 				states.clear();
 				br = new BufferedReader(new FileReader(Filename));
 				String spec = br.readLine();
 				while((line  = br.readLine()) != null)
 				{
-	
+					System.out.println("---------------------------------------------");
+					System.out.println(line);
 					Matcher m1 = regex1.matcher(line);
 					Matcher m2 = regex2.matcher(line);
 					Matcher m3 = regex3.matcher(line);
@@ -91,15 +131,22 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 						DefaultMonState ds1 = new DefaultMonState(State1, "");
 						if(!states.contains(ds1))
 							states.add(ds1);
+						else
+							ds1 = states.get(states.indexOf(ds1));
 						String State2 = m1.group(2);
 						DefaultMonState ds2 = new DefaultMonState(State2, "");
 						if(!states.contains(ds2))
 							states.add(ds2);
+						else
+							ds2 = states.get(states.indexOf(ds2));
+						
 						DefaultPredicateState dp1 = new DefaultPredicateState();
-						for(int i = 3; i < m1.groupCount(); i++)
-							if(m1.group(i) != null)
-								dp1.SetValue(m1.group(i), true);
+						for (String retval: m1.group(3).split("&&")){
+					         dp1.SetValue(retval, true);
+					         System.out.println("Predicate" + retval );
+					    }
 						ds1.SetTransition(dp1, ds2);
+						System.out.println(ds1.State + " to " + ds2.State );
 					}
 					if(m2.find())
 					{
@@ -107,22 +154,30 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 						DefaultMonState ds1 = new DefaultMonState(State1, "");
 						if(!states.contains(ds1))
 							states.add(ds1);
+						else
+							ds1 = states.get(states.indexOf(ds1));
 						String State2 = m2.group(2);
 						DefaultMonState ds2 = new DefaultMonState(State2, "");
 						if(!states.contains(ds2))
 							states.add(ds2);
+						else
+							ds2 = states.get(states.indexOf(ds2));
+						
 						ds1.SetTransition(new DefaultPredicateState(),ds2);
+						System.out.println(ds1.State + " to " + ds2.State );
 					}
 					if(m3.find())
 					{
 						int id = states.indexOf(new DefaultMonState(m3.group(1), ""));
 						DefaultMonState state = states.get(id);
 						state.Valuation = this.valuation.GetSemanticDescription(m3.group(2));
-						if(state.State.equals("(0, 0)"))
+						System.out.println(state.State + " color " + state.Valuation);
+						if(state.State.contains("(0, 0)"))
 						{
 							this.InitialStates.put(Integer.toString(spec_count), state);
 							this.CurrentStates.put(Integer.toString(spec_count), state);
-							CurrSpecStatus.put(spec, this.valuation.GetDefaultValuation());
+							CurrSpecStatus.put(Integer.toString(spec_count), this.valuation.GetDefaultValuation());
+//							System.out.println(state.State + " set initial value " + state.Valuation);
 						}
 					}
 				}
@@ -143,16 +198,28 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 	
 	public HashMap<String, String> runMonitor() {
 		// TODO Auto-generated method stub
+		
 		for(int i =0; i < Buffer.size();i++)
 		{
-			for(int j = 0; j < CurrentStates.size();i++)
+			
+			for(int j = 0; j < CurrentStates.size();j++)
 			{
-				CurrentStates.put(Integer.toString(j), CurrentStates.get(j).GetNextMonState(Buffer.get(i)));
-				DefaultMonState ms1 = (DefaultMonState)CurrentStates.get(j);
-				CurrSpecStatus.put(CurrSpecStatus.get(j), ms1.Valuation);
-				for(MonitoringEventListener<String, String> ml: mlist)
+				DefaultMonState nextState = (DefaultMonState)CurrentStates.get(Integer.toString(j)).GetNextMonState(Buffer.get(i));
+				if(nextState != null)
 				{
-					ml.MonValuationChanged(CurrSpecStatus.get(j), ms1.Valuation);
+					System.err.println(nextState.State);
+					CurrentStates.put(Integer.toString(j),nextState);
+					DefaultMonState ms1 = (DefaultMonState)CurrentStates.get(Integer.toString(j));
+					System.out.println(ms1.Valuation);
+					CurrSpecStatus.put(Integer.toString(j),ms1.Valuation);
+					for(MonitoringEventListener<String, String> ml: mlist)
+					{
+						ml.MonValuationChanged(CurrSpecStatus.get(Integer.toString(j)), ms1.Valuation);
+					}
+				}
+				else
+				{
+					System.err.println("State is null");
 				}
 			}
 		}

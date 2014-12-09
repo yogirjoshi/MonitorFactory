@@ -7,13 +7,13 @@ import rithm.core.PredicateState;
 
 public class DefaultPredicateState implements PredicateState{
 	protected HashMap<String, Boolean> PredValues;
-	public void PredicateState()
+	public DefaultPredicateState()
 	{
 		PredValues = new HashMap<String, Boolean>();
 	}
 	public boolean SetValue(String Name, boolean Value) {
 		// TODO Auto-generated method stub
-		if(PredValues.containsKey(Name))
+		if(!PredValues.containsKey(Name))
 		{
 			PredValues.put(Name, Value);
 			return true;
@@ -37,5 +37,13 @@ public class DefaultPredicateState implements PredicateState{
 		if(this.PredValues.size() != dps2.PredValues.size())
 			return false;
 		return true;
+	}
+	public int hashCode(){
+		int hashVal=0;
+		for(String key: PredValues.keySet())
+		{
+			hashVal+=key.hashCode();
+		}
+		return hashVal;
 	}
 }

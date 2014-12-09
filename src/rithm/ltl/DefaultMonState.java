@@ -25,7 +25,8 @@ public class DefaultMonState implements MonState{
 		if(Pred instanceof DefaultPredicateState)
 		{
 			dpState = (DefaultPredicateState)Pred;
-			return Transitions.get(dpState);
+			MonState m = Transitions.get(dpState);
+			return m;
 		}
 		return null;
 	}

@@ -19,9 +19,9 @@ public class LTL3MonValuation implements MonValuation<String>{
 		TruthValues.add("yellow");
 		TruthValues.add("green");
 		TruthValues.add("red");
-		Semantics.put("?", "Unknown");
-		Semantics.put("Sat", "Specification is Satisfied");
-		Semantics.put("UnSat", "Specification is Violated");
+		Semantics.put("yellow", "Unknown");
+		Semantics.put("green", "Specification is Satisfied");
+		Semantics.put("red", "Specification is Violated");
 	}
 	public String GetDefaultValuation() {
 		// TODO Auto-generated method stub

@@ -18,12 +18,20 @@ public class DefaultPredicateEvaluator extends PredicateEvaluator{
 		DefaultProgramState dpState = gson.fromJson(pState, DefaultProgramState.class );
 		this.pState = dpState;
 	}
-
+	public void SetProgState(DefaultProgramState pState) {
+		// TODO Auto-generated method stub
+		this.pState = pState;
+	}
 	@Override
 	public PredicateState EvaluatePredicates() {
 		// TODO Auto-generated method stub
 		this.prState = new DefaultPredicateState();
-		DefaultProgramState dpState;
+		DefaultProgramState dpstate   = (DefaultProgramState)pState;
+		DefaultPredicateState dprstate = (DefaultPredicateState) prState;
+		if(dpstate.GetVal("trying").equals(Integer.toString(1)))
+			dprstate.SetValue("trying", true);
+		if(dpstate.GetVal("granted").equals(Integer.toString(1)))
+			dprstate.SetValue("granted", true);
 		return this.prState;
 	}
 
