@@ -1,7 +1,9 @@
 package rithm.ltl;
 
+import java.awt.RenderingHints.Key;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
 
@@ -28,10 +30,18 @@ public class DefaultPredicateEvaluator extends PredicateEvaluator{
 		this.prState = new DefaultPredicateState();
 		DefaultProgramState dpstate   = (DefaultProgramState)pState;
 		DefaultPredicateState dprstate = (DefaultPredicateState) prState;
-		if(dpstate.GetVal("trying").equals(Integer.toString(1)))
-			dprstate.SetValue("trying", true);
-		if(dpstate.GetVal("granted").equals(Integer.toString(1)))
-			dprstate.SetValue("granted", true);
+		HashMap<String, String> dictProg = dpstate.field_dictionary;
+		for(String key: dictProg.keySet())
+		{
+			if(dpstate.getDictionary().get(key).equals(Integer.toString(1)))
+				dprstate.SetValue(key, true);
+//			else
+//				dprstate.SetValue(key, false);
+		}
+//		if(dpstate.GetVal("trying").equals(Integer.toString(1)))
+//			dprstate.SetValue("trying", true);
+//		if(dpstate.GetVal("granted").equals(Integer.toString(1)))
+//			dprstate.SetValue("granted", true);
 		return this.prState;
 	}
 

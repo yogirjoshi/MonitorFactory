@@ -143,7 +143,7 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 						DefaultPredicateState dp1 = new DefaultPredicateState();
 						for (String retval: m1.group(3).split("&&")){
 					         dp1.SetValue(retval, true);
-					         System.out.println("Predicate" + retval );
+					         System.out.println("Predicate ->" + retval );
 					    }
 						ds1.SetTransition(dp1, ds2);
 						System.out.println(ds1.State + " to " + ds2.State );
@@ -171,7 +171,7 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 						int id = states.indexOf(new DefaultMonState(m3.group(1), ""));
 						DefaultMonState state = states.get(id);
 						state.Valuation = this.valuation.GetSemanticDescription(m3.group(2));
-						System.out.println(state.State + " color " + state.Valuation);
+						System.out.println(state.State + " valuation ->" + state.Valuation);
 						if(state.State.contains("(0, 0)"))
 						{
 							this.InitialStates.put(Integer.toString(spec_count), state);
@@ -205,6 +205,7 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 			for(int j = 0; j < CurrentStates.size();j++)
 			{
 				DefaultMonState nextState = (DefaultMonState)CurrentStates.get(Integer.toString(j)).GetNextMonState(Buffer.get(i));
+				System.out.println("State " + Integer.toString(i) + " " + Buffer.get(i).toString());
 				if(nextState != null)
 				{
 					System.err.println(nextState.State);

@@ -36,7 +36,34 @@ public class DefaultPredicateState implements PredicateState{
 		DefaultPredicateState dps2 = (DefaultPredicateState) obj;
 		if(this.PredValues.size() != dps2.PredValues.size())
 			return false;
+//		if(this.PredValues.size() > dps2.PredValues.size())
+//		{
+//			for(String key1 : this.PredValues.keySet())
+//			{
+//				if(dps2.PredValues.containsKey(key1))
+//					if(dps2.PredValues.get(key1) != this.PredValues.get(key1))
+//						return false;
+//			}
+//		}
+//		else
+//		{
+//			for(String key1 : dps2.PredValues.keySet())
+//			{
+//				if(this.PredValues.containsKey(key1))
+//					if(dps2.PredValues.get(key1) != this.PredValues.get(key1))
+//						return false;
+//			}
+//		}
 		return true;
+	}
+	public String toString()
+	{
+		String retVal="";
+		for(String key : this.PredValues.keySet())
+		{
+			retVal+=key + " " + this.PredValues.get(key).toString() + "\n";
+		}
+		return retVal;
 	}
 	public int hashCode(){
 		int hashVal=0;

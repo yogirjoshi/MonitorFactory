@@ -25,7 +25,7 @@ public class LTL3MonValuation implements MonValuation<String>{
 	}
 	public String GetDefaultValuation() {
 		// TODO Auto-generated method stub
-		return this.TruthValues.get(0);
+		return this.Semantics.get("yellow");
 	}
 	public void SetValues(Collection<String> TruthValues) {
 		// TODO Auto-generated method stub
