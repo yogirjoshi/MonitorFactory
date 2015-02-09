@@ -31,6 +31,7 @@ public class DefaultPredicateEvaluator extends PredicateEvaluator{
 		DefaultProgramState dpstate   = (DefaultProgramState)pState;
 		DefaultPredicateState dprstate = (DefaultPredicateState) prState;
 		HashMap<String, String> dictProg = dpstate.field_dictionary;
+		dprstate.timeStamp = dpstate.field_dictionary.get("timestamp");
 		for(String key: dictProg.keySet())
 		{
 			if(dpstate.getDictionary().get(key).equals(Integer.toString(1)))

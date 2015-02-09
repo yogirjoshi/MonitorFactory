@@ -1,16 +1,26 @@
 package rithm.ltl;
 
-import java.rmi.NoSuchObjectException;
 import java.util.HashMap;
 
 import rithm.core.PredicateState;
 
 public class DefaultPredicateState implements PredicateState{
 	protected HashMap<String, Boolean> PredValues;
+	String timeStamp;
 	public DefaultPredicateState()
 	{
 		PredValues = new HashMap<String, Boolean>();
+		timeStamp="0";
 	}
+	public DefaultPredicateState(DefaultPredicateState dpS)
+	{
+		this.PredValues = new HashMap<String, Boolean>();
+		for(String key: dpS.PredValues.keySet())
+		{
+			this.PredValues.put(key, dpS.PredValues.get(key));
+		}
+	}
+	
 	public boolean SetValue(String Name, boolean Value) {
 		// TODO Auto-generated method stub
 		if(!PredValues.containsKey(Name))

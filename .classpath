@@ -3,5 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="lib" path="/home/y2joshi/Downloads/gson-2.3.1.jar"/>
+	<classpathentry kind="lib" path="/home/y2joshi/workspace/Parser/RiTHMParsers.jar"/>
+	<classpathentry kind="lib" path="/usr/local/lib/antlr-4.2-complete.jar"/>
+	<classpathentry kind="lib" path="/home/y2joshi/workspace/DataFactory/DataTools.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

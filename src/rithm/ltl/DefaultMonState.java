@@ -15,6 +15,16 @@ public class DefaultMonState implements MonState{
 		this.Valuation = valuation;
 		Transitions = new HashMap<PredicateState, MonState>();
 	}
+//	public DefaultMonState(DefaultMonState ds)
+//	{
+//		this.State = ds.State;
+//		this.Valuation = ds.Valuation;
+//		this.Transitions = new HashMap<PredicateState, MonState>();
+//		for(PredicateState ps: ds.Transitions.keySet())
+//		{
+//			this.Transitions.put(ps, ds.Transitions.get(ps));
+//		}
+//	}
 	public void SetValuation(String Valuation)
 	{
 		this.Valuation = Valuation;

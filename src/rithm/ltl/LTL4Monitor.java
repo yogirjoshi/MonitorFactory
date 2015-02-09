@@ -25,7 +25,7 @@ import rithm.core.ProgState;
 import rithm.core.RiTHMMonitor;
 import rithm.parsertools.LTLParser;
 
-public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashMap<String,String>>
+public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, HashMap<String,String>>
 {
 
 
@@ -50,7 +50,7 @@ public class LTLMonitor implements RiTHMMonitor<String, ArrayList<String>, HashM
 	protected ArrayList<String> specList;
 	
 	protected String outFileName;
-	public LTLMonitor()
+	public LTL4Monitor()
 	{
 		Buffer = new ArrayList<PredicateState>();
 		CurrSpecStatus = new HashMap<String, String>();
