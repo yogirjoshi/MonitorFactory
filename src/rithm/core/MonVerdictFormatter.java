@@ -7,9 +7,9 @@ package rithm.core;
  * @author y2joshi
  *
  */
-public interface MonVerdictFormatter<Spectype, MonStateType> {
+public interface MonVerdictFormatter{
 	
-	public void bufferVerdict(Spectype specId,MonStateType monState);
+	public void bufferVerdict(RiTHMSpecification specId,MonState monState);
 	public void writeVerdict();
 	public void writeAll();
 }

@@ -5,36 +5,36 @@ import java.util.HashMap;
 import rithm.core.PredicateState;
 
 public class DefaultPredicateState implements PredicateState{
-	protected HashMap<String, Boolean> PredValues;
+	protected HashMap<String, Boolean> predValues;
 	String timeStamp;
 	public DefaultPredicateState()
 	{
-		PredValues = new HashMap<String, Boolean>();
+		predValues = new HashMap<String, Boolean>();
 		timeStamp="0";
 	}
 	public DefaultPredicateState(DefaultPredicateState dpS)
 	{
-		this.PredValues = new HashMap<String, Boolean>();
-		for(String key: dpS.PredValues.keySet())
+		this.predValues = new HashMap<String, Boolean>();
+		for(String key: dpS.predValues.keySet())
 		{
-			this.PredValues.put(key, dpS.PredValues.get(key));
+			this.predValues.put(key, dpS.predValues.get(key));
 		}
 	}
 	
-	public boolean SetValue(String Name, boolean Value) {
+	public boolean setValue(String Name, boolean Value) {
 		// TODO Auto-generated method stub
-		if(!PredValues.containsKey(Name))
+		if(!predValues.containsKey(Name))
 		{
-			PredValues.put(Name, Value);
+			predValues.put(Name, Value);
 			return true;
 		}
 		return false;
 	} 
 
-	public boolean GetValue(String Name) throws RuntimeException{
+	public boolean getValue(String Name) throws RuntimeException{
 		// TODO Auto-generated method stub
-		if(PredValues.containsKey(Name))
-			return PredValues.get(Name);
+		if(predValues.containsKey(Name))
+			return predValues.get(Name);
 		else
 			throw new RuntimeException("No Predicate Value set for " + Name);
 	}
@@ -44,23 +44,23 @@ public class DefaultPredicateState implements PredicateState{
 		if(!(obj instanceof DefaultPredicateState))
 			return false;
 		DefaultPredicateState dps2 = (DefaultPredicateState) obj;
-		if(this.PredValues.size() != dps2.PredValues.size())
+		if(this.predValues.size() != dps2.predValues.size())
 			return false;
-//		if(this.PredValues.size() > dps2.PredValues.size())
+//		if(this.predValues.size() > dps2.predValues.size())
 //		{
-//			for(String key1 : this.PredValues.keySet())
+//			for(String key1 : this.predValues.keySet())
 //			{
-//				if(dps2.PredValues.containsKey(key1))
-//					if(dps2.PredValues.get(key1) != this.PredValues.get(key1))
+//				if(dps2.predValues.containsKey(key1))
+//					if(dps2.predValues.get(key1) != this.predValues.get(key1))
 //						return false;
 //			}
 //		}
 //		else
 //		{
-//			for(String key1 : dps2.PredValues.keySet())
+//			for(String key1 : dps2.predValues.keySet())
 //			{
-//				if(this.PredValues.containsKey(key1))
-//					if(dps2.PredValues.get(key1) != this.PredValues.get(key1))
+//				if(this.predValues.containsKey(key1))
+//					if(dps2.predValues.get(key1) != this.predValues.get(key1))
 //						return false;
 //			}
 //		}
@@ -69,15 +69,15 @@ public class DefaultPredicateState implements PredicateState{
 	public String toString()
 	{
 		String retVal="";
-		for(String key : this.PredValues.keySet())
+		for(String key : this.predValues.keySet())
 		{
-			retVal+=key + " " + this.PredValues.get(key).toString() + "\n";
+			retVal+=key + " " + this.predValues.get(key).toString() + "\n";
 		}
 		return retVal;
 	}
 	public int hashCode(){
 		int hashVal=0;
-		for(String key: PredValues.keySet())
+		for(String key: predValues.keySet())
 		{
 			hashVal+=key.hashCode();
 		}

@@ -3,9 +3,9 @@ package rithm.core;
 import java.util.Collection;
 import java.util.HashMap;
 
-public interface MonValuation <T1> {
-	public void SetValues(Collection<T1> TruthValues);
-	public void SetSemanticDescription(HashMap<T1, String> Desc);
-	public String GetSemanticDescription(T1 Semantic);
-	public T1 GetDefaultValuation();
+public interface MonValuation {
+	public void setValues(Collection<RiTHMTruthValue> TruthValues);
+	public void setSemanticDescription(HashMap<RiTHMTruthValue, String> Desc);
+	public String getSemanticDescription(RiTHMTruthValue Semantic);
+	public RiTHMTruthValue getDefaultValuation();
 }

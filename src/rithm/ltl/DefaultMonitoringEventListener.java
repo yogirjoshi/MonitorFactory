@@ -1,12 +1,12 @@
 package rithm.ltl;
 
-import rithm.core.MonValuation;
 import rithm.core.MonitoringEventListener;
-
-public class DefaultMonitoringEventListener extends MonitoringEventListener<String, String>{
+import rithm.core.RiTHMSpecification;
+import rithm.core.RiTHMTruthValue;;
+public class DefaultMonitoringEventListener extends MonitoringEventListener{
 	
 	@Override
-	public void MonValuationChanged(String Spec, String TVal) {
+	public void MonValuationChanged(RiTHMSpecification Spec, RiTHMTruthValue TVal) {
 		// TODO Auto-generated method stub
 		
 	}

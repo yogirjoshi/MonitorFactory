@@ -5,49 +5,56 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import rithm.core.MonValuation;
+import rithm.core.RiTHMTruthValue;
 
-public class LTL3MonValuation implements MonValuation<String>{
+public class LTL3MonValuation implements MonValuation{
 
 
-	protected String CurrValuation;
-	protected HashMap<String, String> Semantics;
-	protected ArrayList<String> TruthValues;
+	protected String currValuation;
+	protected HashMap<String, String> semantics;
+	protected ArrayList<String> truthValues;
 	public LTL3MonValuation()
 	{
-		Semantics = new HashMap<String, String>();
-		TruthValues = new ArrayList<String>();
-		TruthValues.add("yellow");
-		TruthValues.add("green");
-		TruthValues.add("red");
-		Semantics.put("yellow", "Validation status Unknown");
-		Semantics.put("green", "Satisfied");
-		Semantics.put("red", "Violated");
-	}
-	public String GetDefaultValuation() {
-		// TODO Auto-generated method stub
-		return this.Semantics.get("yellow");
-	}
-	public void SetValues(Collection<String> TruthValues) {
-		// TODO Auto-generated method stub
-		if(TruthValues instanceof ArrayList<?>)
-		{
-			for(String each_truth_value: TruthValues)
-				this.TruthValues.add(each_truth_value);
-		}
+		semantics = new HashMap<String, String>();
+		truthValues = new ArrayList<String>();
+		truthValues.add("yellow");
+		truthValues.add("green");
+		truthValues.add("red");
+		semantics.put("yellow", "Validation status Unknown");
+		semantics.put("green", "Satisfied");
+		semantics.put("red", "Violated");
 	}
 
-	public void SetSemanticDescription(HashMap<String, String> Desc) {
+	public RiTHMTruthValue getDefaultValuation() {
 		// TODO Auto-generated method stub
-		for(String each_key : Desc.keySet())
+		return new DefaultRiTHMTruthValue(this.semantics.get("yellow"));
+	}
+	public String getSemanticDescription(RiTHMTruthValue rithmTruthVal) {
+		// TODO Auto-generated method stub
+		return this.semantics.get(rithmTruthVal.getTruthValueDescription());
+	}
+
+	public void setValues(Collection<RiTHMTruthValue> truthValues) {
+		// TODO Auto-generated method stub
+//		if(truthValues instanceof ArrayList<?>)
+//		{
+		for(RiTHMTruthValue each_truth_value: truthValues)
+			this.truthValues.add(each_truth_value.getTruthValueDescription());
+//		}
+	}
+
+	public void setSemanticDescription(HashMap<RiTHMTruthValue, String> desc) {
+		// TODO Auto-generated method stub
+		for(RiTHMTruthValue each_key : desc.keySet())
 		{
-			this.Semantics.put(each_key, Desc.get(each_key));
+			this.semantics.put(each_key.getTruthValueDescription(), desc.get(each_key));
 		}
 		
 	}
 
-	public String GetSemanticDescription(String Semantic) {
+	public String getSemanticDescription(String semanticDesc) {
 		// TODO Auto-generated method stub
-		return this.Semantics.get(Semantic);
+		return this.semantics.get(semanticDesc);
 	}
 
 }

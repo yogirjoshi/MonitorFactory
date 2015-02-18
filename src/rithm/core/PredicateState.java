@@ -10,6 +10,6 @@ import java.rmi.NoSuchObjectException;
  *
  */
 public interface PredicateState {
-	public boolean SetValue(String Name, boolean Value);
-	public boolean GetValue(String Name) throws NoSuchObjectException;
+	public boolean setValue(String Name, boolean Value);
+	public boolean getValue(String Name) throws NoSuchObjectException;
 }

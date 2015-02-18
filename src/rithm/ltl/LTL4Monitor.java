@@ -23,24 +23,26 @@ import rithm.core.PredicateEvaluator;
 import rithm.core.PredicateState;
 import rithm.core.ProgState;
 import rithm.core.RiTHMMonitor;
+import rithm.core.RiTHMSpecification;
+import rithm.core.RiTHMTruthValue;
 import rithm.parsertools.LTLParser;
 
-public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, HashMap<String,String>>
+public class LTL4Monitor implements RiTHMMonitor<ArrayList<RiTHMSpecification>, HashMap<RiTHMSpecification,RiTHMTruthValue>>
 {
 
 
-	public boolean SynthesizeMonitors(ArrayList<String> Specs) {
+	public boolean SynthesizeMonitors(ArrayList<RiTHMSpecification> Specs) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	protected HashMap<String, String> CurrSpecStatus; 
-	protected MonValuation<String> valuation;
-	protected ArrayList<PredicateState> Buffer;
+	protected HashMap<RiTHMSpecification, RiTHMTruthValue> currSpecStatus; 
+	protected MonValuation valuation;
+	protected ArrayList<PredicateState> buffer;
 	protected PredicateEvaluator pe;
 	
-	protected HashMap<String, MonState> InitialStates;
-	protected HashMap<String, MonState> CurrentStates;
-	protected ArrayList<MonitoringEventListener<String, String>> mlist;
+	protected HashMap<String, MonState> initialStates;
+	protected HashMap<String, MonState> currentStates;
+	protected ArrayList<MonitoringEventListener> mlist;
 	
 	protected Properties propSet;
 	protected String ltltoolsDirname;
@@ -52,11 +54,11 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 	protected String outFileName;
 	public LTL4Monitor()
 	{
-		Buffer = new ArrayList<PredicateState>();
-		CurrSpecStatus = new HashMap<String, String>();
-		InitialStates = new HashMap<String, MonState>();
-		CurrentStates = new HashMap<String, MonState>();
-		mlist = new ArrayList<MonitoringEventListener<String,String>>();
+		buffer = new ArrayList<PredicateState>();
+		currSpecStatus = new HashMap<RiTHMSpecification, RiTHMTruthValue>();
+		initialStates = new HashMap<String, MonState>();
+		currentStates = new HashMap<String, MonState>();
+		mlist = new ArrayList<MonitoringEventListener>();
 		propSet = new Properties();
 		try
 		{
@@ -79,29 +81,27 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 	public boolean FillBuffer(ProgState ps) {
 		// TODO Auto-generated method stub
 		pe.SetProgStateObj(ps);
-		assert Buffer != null;
+		assert buffer != null;
 		assert pe != null;
-		Buffer.add((PredicateState)pe.EvaluatePredicates());
+		buffer.add((PredicateState)pe.EvaluatePredicates());
 		return false;
 	}
-	public void SetMonitorValuation(MonValuation<?> val) {
+	public void SetMonitorValuation(MonValuation val) {
 		// TODO Auto-generated method stub
-		MonValuation<String> val2 = (MonValuation<String>)val;
-		this.valuation = val2;
+		this.valuation = val;
 	}
 
 	
-	public void SetMonitoringEventListener(MonitoringEventListener<?, ?> mel) {
+	public void SetMonitoringEventListener(MonitoringEventListener mel) {
 		// TODO Auto-generated method stub
-		MonitoringEventListener<String, String> mel1 = ((MonitoringEventListener<String, String>)mel);
-		mlist.add(mel1);
+		mlist.add(mel);
 	}
 	
-	public boolean SetFormulas(ArrayList<String> Specs) {
+	public boolean SetFormulas(ArrayList<RiTHMSpecification> specs) {
 		// TODO Auto-generated method stub
-		for(String each_spec: Specs)
+		for(RiTHMSpecification each_spec: specs)
 		{
-			CurrSpecStatus.put(each_spec, this.valuation.GetDefaultValuation());
+			currSpecStatus.put(new DefaultRiTHMSpecification(each_spec.getTextDescription()), this.valuation.getDefaultValuation());
 		}
 		return false;
 	}
@@ -157,11 +157,11 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 
 					DefaultPredicateState dp1 = new DefaultPredicateState();
 					for (String retval: m1.group(3).split("&&")){
-						dp1.SetValue(retval, true);
+						dp1.setValue(retval, true);
 						System.out.println("Predicate ->" + retval );
 					}
 					ds1.SetTransition(dp1, ds2);
-					System.out.println(ds1.State + " to " + ds2.State );
+					System.out.println(ds1.state + " to " + ds2.state );
 				}
 				if(m2.find())
 				{
@@ -179,19 +179,19 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 						ds2 = states.get(states.indexOf(ds2));
 
 					ds1.SetTransition(new DefaultPredicateState(),ds2);
-					System.out.println(ds1.State + " to " + ds2.State );
+					System.out.println(ds1.state + " to " + ds2.state );
 				}
 				if(m3.find())
 				{
 					int id = states.indexOf(new DefaultMonState(m3.group(1), ""));
 					DefaultMonState state = states.get(id);
-					state.Valuation = this.valuation.GetSemanticDescription(m3.group(2));
-					System.out.println(state.State + " valuation ->" + state.Valuation);
-					if(state.State.contains("(0, 0)"))
+					state.valuation = this.valuation.getSemanticDescription(new DefaultRiTHMTruthValue(m3.group(2)));
+					System.out.println(state.state + " valuation ->" + state.valuation);
+					if(state.state.contains("(0, 0)"))
 					{
-						this.InitialStates.put(Integer.toString(spec_count), state);
-						this.CurrentStates.put(Integer.toString(spec_count), state);
-						CurrSpecStatus.put(Integer.toString(spec_count), this.valuation.GetDefaultValuation());
+						this.initialStates.put(Integer.toString(spec_count), state);
+						this.currentStates.put(Integer.toString(spec_count), state);
+						currSpecStatus.put(new DefaultRiTHMSpecification(specList.get(spec_count)), this.valuation.getDefaultValuation());
 						//							System.out.println(state.State + " set initial value " + state.Valuation);
 					}
 				}
@@ -246,7 +246,7 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 
 	public void setPredState(DefaultPredicateState dpState,ArrayList<String> predsNeeded)
 	{
-		Iterator it = dpState.PredValues.entrySet().iterator();
+		Iterator it = dpState.predValues.entrySet().iterator();
 		while(it.hasNext())
 		{
 			Map.Entry<String, Boolean> pairs = (Map.Entry<String, Boolean>)it.next();
@@ -254,7 +254,7 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 				it.remove();
 		}
 	}
-	public HashMap<String, String> runMonitor() {
+	public HashMap<RiTHMSpecification, RiTHMTruthValue> runMonitor() {
 		// TODO Auto-generated method stub
 		BufferedWriter outWriter;
 		try
@@ -262,55 +262,55 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 			outWriter = new BufferedWriter(new FileWriter(new File(outFileName)));
 			outWriter.write("<html>");
 			outWriter.write("<body>");
-			for(int i =0; i < Buffer.size();i++)
+			for(int i =0; i < buffer.size();i++)
 			{
 //				System.out.println("__________________________________________________________________");
 //				System.out.println("Event " + Integer.toString(i));
 				
-				DefaultPredicateState topState = (DefaultPredicateState)Buffer.get(i);
+				DefaultPredicateState topState = (DefaultPredicateState)buffer.get(i);
 				outWriter.write("Event:" + Integer.toString(i) +" Timestamp:" + topState.timeStamp);
-				for(int j = 0; j < CurrentStates.size();j++)
+				for(int j = 0; j < currentStates.size();j++)
 				{
-					DefaultPredicateState dpPredState = new DefaultPredicateState((DefaultPredicateState)Buffer.get(i));
+					DefaultPredicateState dpPredState = new DefaultPredicateState((DefaultPredicateState)buffer.get(i));
 					ArrayList<String> predsForthisSpec = ltlParser.getPredsForSpec(specList.get(j));
 					
 					setPredState(dpPredState, predsForthisSpec);
 					
-					DefaultMonState nextState = (DefaultMonState)CurrentStates.get(Integer.toString(j)).GetNextMonState(dpPredState);
+					DefaultMonState nextState = (DefaultMonState)currentStates.get(Integer.toString(j)).GetNextMonState(dpPredState);
 					
 					if(nextState != null)
 					{
-						CurrentStates.put(Integer.toString(j),nextState);
-						DefaultMonState ms1 = (DefaultMonState)CurrentStates.get(Integer.toString(j));
+						currentStates.put(Integer.toString(j),nextState);
+						DefaultMonState ms1 = (DefaultMonState)currentStates.get(Integer.toString(j));
 //						System.out.println("Specification: " + specList.get(j) + " => " + ms1.Valuation);
 	//					System.out.println("State " + Integer.toString(i) + " " + dpPredState.toString());
 						outWriter.write("<div style=\"background: #B0B0B0 \">");
 						
-						if(ms1.Valuation.equals("Satisfied"))
+						if(ms1.valuation.equals("Satisfied"))
 						{
 //							outWriter.write("<div style=\"background: LightGreen\">");
-							outWriter.write("Specification: " + specList.get(j) + " => " + "<font color=\"Lime\">" + ms1.Valuation + "</font>");
+							outWriter.write("Specification: " + specList.get(j) + " => " + "<font color=\"Lime\">" + ms1.valuation + "</font>");
 //							outWriter.write("</div>");
 						}
-						if(ms1.Valuation.equals("Violated"))
+						if(ms1.valuation.equals("Violated"))
 						{
 //							outWriter.write("<div style=\"background: #FF9900\">");
-							outWriter.write("Specification: " + specList.get(j) + " => " + "<font color=\"Red\">" + ms1.Valuation + "</font>");
+							outWriter.write("Specification: " + specList.get(j) + " => " + "<font color=\"Red\">" + ms1.valuation + "</font>");
 //							outWriter.write("</div>");
 						}
-						if(ms1.Valuation.equals("Validation status Unknown"))
+						if(ms1.valuation.equals("Validation status Unknown"))
 						{
 //							outWriter.write("<div style=\"background: yellow\">");
-							outWriter.write("Specification: " + specList.get(j) + " => " + "<font color=\"Yellow\">" + ms1.Valuation + "</font>");
+							outWriter.write("Specification: " + specList.get(j) + " => " + "<font color=\"Yellow\">" + ms1.valuation + "</font>");
 //							outWriter.write("</div>");
 						}
 						outWriter.write("</div>");
-						CurrSpecStatus.put(Integer.toString(j),ms1.Valuation);
+						currSpecStatus.put(new DefaultRiTHMSpecification(specList.get(j)),new DefaultRiTHMTruthValue(ms1.valuation));
 						
 						
-						for(MonitoringEventListener<String, String> ml: mlist)
+						for(MonitoringEventListener ml: mlist)
 						{
-							ml.MonValuationChanged(CurrSpecStatus.get(Integer.toString(j)), ms1.Valuation);
+							ml.MonValuationChanged(new DefaultRiTHMSpecification(specList.get(j)), new DefaultRiTHMTruthValue(ms1.valuation));
 						}
 					}
 					else
@@ -326,7 +326,7 @@ public class LTL4Monitor implements RiTHMMonitor<String, ArrayList<String>, Hash
 		{
 			System.out.println(io.getMessage());
 		}
-		return CurrSpecStatus;
+		return currSpecStatus;
 	}
 
 	public boolean SetTraceFile(String FileName) {

@@ -1,12 +1,11 @@
 package rithm.core;
 
-import java.util.Collection;
 
 public abstract class PredicateEvaluator{
 
 	protected ProgState pState;
 	protected PredicateState prState; 
-	public void PredicateEvaluator()
+	public PredicateEvaluator()
 	{
 	}
 	public void SetProgStateObj(ProgState pState)

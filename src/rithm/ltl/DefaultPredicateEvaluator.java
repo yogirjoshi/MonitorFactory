@@ -1,8 +1,5 @@
 package rithm.ltl;
 
-import java.awt.RenderingHints.Key;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
@@ -35,7 +32,7 @@ public class DefaultPredicateEvaluator extends PredicateEvaluator{
 		for(String key: dictProg.keySet())
 		{
 			if(dpstate.getDictionary().get(key).equals(Integer.toString(1)))
-				dprstate.SetValue(key, true);
+				dprstate.setValue(key, true);
 //			else
 //				dprstate.SetValue(key, false);
 		}

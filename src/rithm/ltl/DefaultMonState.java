@@ -6,14 +6,14 @@ import rithm.core.MonState;
 import rithm.core.PredicateState;
 
 public class DefaultMonState implements MonState{
-	protected String State;
-	protected String Valuation;
-	protected HashMap<PredicateState, MonState> Transitions;
+	protected String state;
+	protected String valuation;
+	protected HashMap<PredicateState, MonState> transitions;
 	public DefaultMonState(String state, String valuation)
 	{
-		this.State = state;
-		this.Valuation = valuation;
-		Transitions = new HashMap<PredicateState, MonState>();
+		this.state = state;
+		this.valuation = valuation;
+		transitions = new HashMap<PredicateState, MonState>();
 	}
 //	public DefaultMonState(DefaultMonState ds)
 //	{
@@ -27,22 +27,22 @@ public class DefaultMonState implements MonState{
 //	}
 	public void SetValuation(String Valuation)
 	{
-		this.Valuation = Valuation;
+		this.valuation = Valuation;
 	}
 	public MonState GetNextMonState(PredicateState Pred) {
 		// TODO Auto-generated method stub
 		DefaultPredicateState dpState;
-		if(Pred instanceof DefaultPredicateState)
+		if(Pred.getClass().isAssignableFrom(DefaultPredicateState.class))
 		{
 			dpState = (DefaultPredicateState)Pred;
-			MonState m = Transitions.get(dpState);
+			MonState m = transitions.get(dpState);
 			return m;
 		}
 		return null;
 	}
 	public boolean SetTransition(PredicateState ps, MonState ms)
 	{
-		Transitions.put(ps, ms);
+		transitions.put(ps, ms);
 		return true;
 	}
 	public boolean equals(Object obj)
@@ -50,13 +50,13 @@ public class DefaultMonState implements MonState{
 		if(!(obj instanceof DefaultMonState))
 			return false;
 		DefaultMonState state2 = (DefaultMonState) obj;
-		if(state2.State.equals(this.State))
+		if(state2.state.equals(this.state))
 			return true;
 		else
 			return false;
 	}
 	public int hashCode()
 	{
-		return this.State.hashCode();
+		return this.state.hashCode();
 	}
 }
