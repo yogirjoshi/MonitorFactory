@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="/home/y2joshi/workspace/Parser/RiTHMParsers.jar"/>
 	<classpathentry kind="lib" path="/usr/local/lib/antlr-4.2-complete.jar"/>
 	<classpathentry kind="lib" path="/home/y2joshi/workspace/DataFactory/DataTools.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

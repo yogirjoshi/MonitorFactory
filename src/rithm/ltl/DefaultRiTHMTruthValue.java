@@ -12,5 +12,17 @@ public class DefaultRiTHMTruthValue implements RiTHMTruthValue{
 		// TODO Auto-generated method stub
 		return truthValue;
 	}
-
+	public boolean equals(Object obj)
+	{
+		if(!(obj instanceof DefaultRiTHMTruthValue))
+			return false;
+		DefaultRiTHMTruthValue spec2= (DefaultRiTHMTruthValue) obj;
+		
+		return spec2.truthValue.equals(this.truthValue);
+	}
+	public int hashCode(){
+		int hashVal=0;
+		hashVal+=this.truthValue.hashCode();
+		return hashVal;
+	}
 }
