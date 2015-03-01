@@ -23,19 +23,21 @@ import rithm.core.PredicateEvaluator;
 import rithm.core.PredicateState;
 import rithm.core.ProgState;
 import rithm.core.RiTHMMonitor;
+import rithm.core.RiTHMResultCollection;
 import rithm.core.RiTHMSpecification;
+import rithm.core.RiTHMSpecificationCollection;
 import rithm.core.RiTHMTruthValue;
 import rithm.parsertools.LTLParser;
 
-public class LTLMonitor implements RiTHMMonitor<ArrayList<RiTHMSpecification>, HashMap<RiTHMSpecification,RiTHMTruthValue>>
+public class LTLMonitor implements RiTHMMonitor
 {
 
 
-	public boolean SynthesizeMonitors(ArrayList<RiTHMSpecification> Specs) {
+	public boolean SynthesizeMonitors(RiTHMSpecificationCollection specs) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	protected HashMap<RiTHMSpecification, RiTHMTruthValue> currSpecStatus; 
+	protected RiTHMResultCollection currSpecStatus; 
 	protected MonValuation valuation;
 	protected ArrayList<PredicateState> buffer;
 	protected PredicateEvaluator pe;
@@ -55,7 +57,7 @@ public class LTLMonitor implements RiTHMMonitor<ArrayList<RiTHMSpecification>, H
 	public LTLMonitor()
 	{
 		buffer = new ArrayList<PredicateState>();
-		currSpecStatus = new HashMap<RiTHMSpecification, RiTHMTruthValue>();
+		currSpecStatus = new DefaultRiTHMSpecificationResult();
 		initialStates = new HashMap<String, MonState>();
 		currentStates = new HashMap<String, MonState>();
 		mlist = new ArrayList<MonitoringEventListener>();
@@ -97,11 +99,11 @@ public class LTLMonitor implements RiTHMMonitor<ArrayList<RiTHMSpecification>, H
 		mlist.add(mel);
 	}
 	
-	public boolean SetFormulas(ArrayList<RiTHMSpecification> specs) {
+	public boolean SetFormulas(RiTHMSpecificationCollection specs) {
 		// TODO Auto-generated method stub
-		for(RiTHMSpecification each_spec: specs)
+		for(int i =0; i < specs.length();i++)
 		{
-			currSpecStatus.put(new DefaultRiTHMSpecification(each_spec.getTextDescription()), this.valuation.getDefaultValuation());
+			currSpecStatus.setResult(new DefaultRiTHMSpecification(specs.at(i).getTextDescription()), this.valuation.getDefaultValuation());
 		}
 		return false;
 	}
@@ -191,7 +193,7 @@ public class LTLMonitor implements RiTHMMonitor<ArrayList<RiTHMSpecification>, H
 					{
 						this.initialStates.put(Integer.toString(spec_count), state);
 						this.currentStates.put(Integer.toString(spec_count), state);
-						currSpecStatus.put(new DefaultRiTHMSpecification(specList.get(spec_count)), this.valuation.getDefaultValuation());
+						currSpecStatus.setResult(new DefaultRiTHMSpecification(specList.get(spec_count)), this.valuation.getDefaultValuation());
 						//							System.out.println(state.State + " set initial value " + state.Valuation);
 					}
 				}
@@ -254,7 +256,7 @@ public class LTLMonitor implements RiTHMMonitor<ArrayList<RiTHMSpecification>, H
 				it.remove();
 		}
 	}
-	public HashMap<RiTHMSpecification, RiTHMTruthValue> runMonitor() {
+	public RiTHMResultCollection runMonitor() {
 		// TODO Auto-generated method stub
 		BufferedWriter outWriter;
 		try
@@ -305,7 +307,7 @@ public class LTLMonitor implements RiTHMMonitor<ArrayList<RiTHMSpecification>, H
 //							outWriter.write("</div>");
 						}
 						outWriter.write("</div>");
-						currSpecStatus.put(new DefaultRiTHMSpecification(specList.get(j)),new DefaultRiTHMTruthValue(ms1.valuation));
+						currSpecStatus.setResult(new DefaultRiTHMSpecification(specList.get(j)),new DefaultRiTHMTruthValue(ms1.valuation));
 						
 						
 						for(MonitoringEventListener ml: mlist)

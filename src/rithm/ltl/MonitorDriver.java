@@ -1,6 +1,12 @@
 package rithm.ltl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import rithm.core.ProgState;
+import rithm.core.RiTHMMonitor;
+import rithm.core.RiTHMSpecification;
+import rithm.core.RiTHMTruthValue;
 import rithm.datatools.XMLDataFactory;
 
 public class MonitorDriver {
@@ -14,8 +20,8 @@ public class MonitorDriver {
 //		XMLDataFactory xdFactory = new XMLDataFactory("/home/y2joshi/Input1.xml");
 //		XMLDataFactory xdFactory = new XMLDataFactory("/home/y2joshi/TestDataTools.xml");
 //		XMLDataFactory xdFactory = new XMLDataFactory("/home/y2joshi/TraceQnxThread.xml");
-		
-		LTLMonitor l = new LTLMonitor();
+		RiTHMMonitor l;
+		l = new LTLMonitor();
 		l.SetMonitorValuation(new LTL3MonValuation());
 		l.SetPredicateEvaluator(new DefaultPredicateEvaluator());
 		
